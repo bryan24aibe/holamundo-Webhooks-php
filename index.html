@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook Hola Mundo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Webhook: Hola Mundo</h1>
+    <p>Envía datos al servidor del webhook y visualiza la respuesta.</p>
+    <form id="webhookForm">
+        <label for="data">Datos (JSON):</label>
+        <textarea id="data" rows="5" placeholder='{"nombre": "ChatGPT"}'></textarea>
+        <button type="submit">Enviar</button>
+    </form>
+    <div id="response" class="response" style="display: none;"></div>
+
+    <script>
+        const form = document.getElementById("webhookForm");
+        const responseDiv = document.getElementById("response");
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            // Obtiene los datos del formulario
+            const data = document.getElementById("data").value;
+
+            try {
+                // Realiza la solicitud POST al webhook
+                const response = await fetch("webhook.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: data,
+                });
+
+                // Procesa la respuesta
+                const result = await response.json();
+
+                // Muestra la respuesta en pantalla
+                responseDiv.style.display = "block";
+                responseDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                // Muestra errores en caso de fallo
+                responseDiv.style.display = "block";
+                responseDiv.innerHTML = `<pre>Error: ${error.message}</pre>`;
+            }
+        });
+    </script>
+</body>
+</html>
